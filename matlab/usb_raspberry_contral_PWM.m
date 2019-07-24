@@ -1,5 +1,6 @@
 %% connect raspberry
-rpi = raspi('192.168.31.50', 'pi', 'raspberry')
+% rpi = raspi('192.168.31.50', 'pi', 'raspberry')
+rpi = raspi('192.168.2.145','pi','raspberry')
 
 %% scan i2c device
 scanI2CBus(rpi,'i2c-1')
@@ -31,5 +32,17 @@ write(i2cpwm, [0 old_modle]);
 %% set output enable
 write(i2cpwm, [0 1])
 
-[a,b]=setPWM(i2cpwm, 0,1,150)
+%% set pwm
+% 0.5ms:103
+% 1ms:205
+% 2ms:410
+% 2.5ms:510
+[a,b]=setPWM(i2cpwm, 0,0,510)%%
 
+x=0
+while(1)
+    pause(0.01)
+    x=x+0.01;
+    setPWM(i2cpwm, 3,0,uint16(195*sin(x)+300));
+    setPWM(i2cpwm, 0,0,uint16(195*sin(x)+300));
+end
