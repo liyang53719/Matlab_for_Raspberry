@@ -1,6 +1,6 @@
 %% connect raspberry
 % rpi = raspi('192.168.31.50', 'pi', 'raspberry')
-rpi = raspi('192.168.2.145','pi','raspberry')
+rpi = raspi('192.168.2.143','pi','raspberry')
 
 %% scan i2c device
 scanI2CBus(rpi,'i2c-1')
@@ -22,12 +22,14 @@ PCA.ALLLED_OFF_H       = 253;%'0xFD';
 
 %% set PWM frequency 
 % prescale_value = round(osc_clock/(4096 * update_rate))-1
-old_modle = readRegister(i2cpwm, 0);
-if (bitand(old_modle,16) == 0)
-    write(i2cpwm, [0 17]);
+if(readRegister(i2cpwm, 254) ~= 120)
+    old_modle = readRegister(i2cpwm, 0);
+    if (bitand(old_modle,16) == 0)
+        write(i2cpwm, [0 17]);
+    end
+    write(i2cpwm, [PCA.PRESCALE 120])
+    write(i2cpwm, [0 old_modle]);
 end
-write(i2cpwm, [PCA.PRESCALE 120])
-write(i2cpwm, [0 old_modle]);
 
 %% set output enable
 write(i2cpwm, [0 1])
@@ -41,7 +43,7 @@ write(i2cpwm, [0 1])
 
 x=0
 while(1)
-    pause(0.01)
+%     pause(0.01)
     x=x+0.01;
     setPWM(i2cpwm, 3,0,uint16(195*sin(x)+300));
     setPWM(i2cpwm, 0,0,uint16(195*sin(x)+300));
