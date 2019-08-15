@@ -1,0 +1,50 @@
+%% connect raspberry
+rpi = raspi('192.168.2.145','pi','raspberry')
+
+%% find Uart pins
+% showPins(rpi)
+
+%% open and connect an UART port
+use_miniUART = 1;
+if(use_miniUART)
+    myserialdevice = serialdev(rpi,'/dev/ttyS0',115200);
+else
+    myserialdevice = serialdev(rpi,'/dev/ttyAMA0',115200);
+end
+
+myserialdevice.Timeout = 1;
+% write(myserialdevice,['abcd!' 10 13],'char');
+% write(myserialdevice,['#255P1500T100' 10 13],'char');
+position  = 500;
+write(myserialdevice,['#255P' num2str(position) 'T100!']);
+
+write(myserialdevice,'#1PRAD!');
+write(myserialdevice,'#1PVER!');
+piserialread(myserialdevice,20)
+% l = 20;
+% rx_byte = 0;
+% rx_cmd = 0;
+% for i = 1:l
+%     rx_byte = read(myserialdevice,1);
+%     if(int8(rx_byte) == 13)
+%         rx_byte = read(myserialdevice,1);
+%         break
+%     end
+%     try
+%         rx_cmd(i)=rx_byte;
+%     catch
+%         break
+%     end
+% end
+% char(rx_cmd)
+
+
+x=0
+while(1)
+    pause(0.1)
+    x=x+0.2;
+    position  = uint16(800*sin(x)+1500)
+    write(myserialdevice,['#1P' num2str(position) 'T100!']);
+    write(myserialdevice,['#2P' num2str(position) 'T100!']);
+    write(myserialdevice,['#3P' num2str(position) 'T100!']);
+end
