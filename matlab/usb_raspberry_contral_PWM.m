@@ -1,10 +1,11 @@
 %% connect raspberry
 % rpi = raspi('192.168.31.50', 'pi', 'raspberry')
-rpi = raspi('192.168.2.143','pi','raspberry')
+% rpi = raspi('192.168.2.143','pi','raspberry')
+rpi = raspi('192.168.2.134','pi','raspberry')
 
 %% scan i2c device
 scanI2CBus(rpi,'i2c-1')
-i2cpwm = i2cdev(rpi,'i2c-1','0x40')
+i2cpwm = i2cdev(rpi,'i2c-1','0x40');
 %% same regs
 PCA.SUBADR1            = 02;
 PCA.SUBADR2            = 03;
