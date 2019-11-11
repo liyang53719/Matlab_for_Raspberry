@@ -1,4 +1,4 @@
-
+function [foot_step_x, foot_step_y] = trajectory_planner()
 LEG_LENGTH = 0.282;
 MAX_DISPLACEMENT = 0.125;
 STANCE_DEPTH = 0.005;
@@ -20,16 +20,32 @@ tp = TrajectoryPlanner_init(MAX_DISPLACEMENT, STANCE_DEPTH);
 % plt.grid(linestyle='-', linewidth='0.5', color='gray')
 
 for i =1:100
-  phase_magnitude = i / 100;
-  [x_swing, y_swing] = TrajectoryPlanner_generate_swing(tp,phase_magnitude);
-  [x_stance, y_stance] = TrajectoryPlanner_generate_stance(tp,phase_magnitude);
-  ref_x = 0.0;
-  ref_y = 0.28;
-  swing_x_points(i)=(ref_x - x_swing);
-  swing_y_points(i)=(ref_y + y_swing);
-  stance_x_points(i)=(ref_x - x_stance);
-  stance_y_points(i)=(ref_y + y_stance);
+    phase_magnitude = i / 100;
+    [x_swing, y_swing] = TrajectoryPlanner_generate_swing(tp,phase_magnitude);
+    [x_stance, y_stance] = TrajectoryPlanner_generate_stance(tp,phase_magnitude);
+    ref_x = 0.0;
+    ref_y = 0.28;
+    swing_x_points(i)=(ref_x - x_swing);
+    swing_y_points(i)=(ref_y + y_swing);
+    stance_x_points(i)=(ref_x - x_stance);
+    stance_y_points(i)=(ref_y + y_stance);
 end
 plot(swing_x_points, swing_y_points)
 hold on
 plot(stance_x_points, stance_y_points)
+
+for i = 1:100
+    foot_step_x(i) = swing_x_points(i);
+    foot_step_y(i) = swing_y_points(i);
+end
+for i = 1:100
+    foot_step_x(i+100) = stance_x_points(i);
+    foot_step_y(i+100) = stance_y_points(i);
+end
+
+% plot(foot_step_x, foot_step_y)
+
+
+end
+
+
